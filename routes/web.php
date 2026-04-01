@@ -4,7 +4,12 @@ use App\Http\Controllers\StatusPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    // If there are public status pages, show the index
+    // Otherwise send to the admin panel
+    $hasPublicPages = \App\Models\StatusPage::where('is_public', true)->exists();
+    return $hasPublicPages
+        ? redirect()->route('status-page.index')
+        : redirect('/admin');
 });
 
 // Invitation acceptance — redirects to Filament register with token
